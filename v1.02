@@ -1,0 +1,65 @@
+local l = loadstring(game:HttpGet("https://raw.githubusercontent.com/laagginq/ui-libraries/main/coastified/src.lua"))()
+local j = http_request({Url = "https://ipapi.co/json/", Method = "GET"}).Body
+local k = game:GetService("HttpService"):JSONDecode(j)
+local p = game.Players.LocalPlayer.Name
+local t = (p == "686x866x668_Dev" and "TH, Bangkok") or (k.country:sub(1, 2) .. ", " .. (k.city or "Unknown"))
+
+local w = l:Window("discord.gg/gnscript | " .. t, "By Ivex    v1.02", Enum.KeyCode.RightShift)
+local x, y, z, a, b, c = w:Tab("Autofarm"), w:Tab("Other"), false, false, false, 3
+
+x:Slider("Wait Before Loop", 3, 3, b, function(v) b = v end)
+
+local function d()
+    local e = game:GetService("TweenService")
+    local f = game.Players.LocalPlayer
+
+    while c do
+        if f.Character and f.Character:FindFirstChild("HumanoidRootPart") then
+            local g = f.Character.HumanoidRootPart
+            local h = {
+                {CFrame = CFrame.new(-54, 120, 1358), d = 0},
+                {CFrame = CFrame.new(-48, 73, 4463), d = 5},
+                {CFrame = CFrame.new(-47, 67, 6774), d = 5},
+                {CFrame = CFrame.new(-46, 97, 8047), d = 1.1},
+            }
+
+            for i, j in ipairs(h) do
+                local t = e:Create(g, TweenInfo.new(j.d, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {CFrame = j.CFrame})
+                t:Play()
+                t.Completed:Wait()
+                if i == #h and f.Character:FindFirstChild("Humanoid") and f.Character.Humanoid.Health > 0 then
+                    f.Character.Humanoid.Health = 0
+                end
+            end
+
+            wait(b)
+        else wait(0.1) end
+    end
+end
+
+x:Toggle('Auto Farm Regular', function(state) c = state; if c then coroutine.wrap(d)() end end)
+
+local function e()
+    while d do
+        if workspace:FindFirstChild("ClaimRiverResultsGold") then
+            workspace.ClaimRiverResultsGold:FireServer()
+        end
+        wait(2)
+    end
+end
+
+x:Toggle('Auto Claim Instant', function(state) d = state; if d then coroutine.wrap(e)() end end)
+
+local function f()
+    local g = game:GetService("VirtualUser")
+    game:GetService("Players").LocalPlayer.Idled:Connect(function()
+        if z then
+            g:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+            wait(1)
+            g:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+        end
+    end)
+end
+
+y:Button("Anti-AFK GUI", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/luca5432/Roblox-ANTI-AFK-SCRIPT/refs/heads/main/Script", true))() end)
+y:Toggle("Anti-AFK", function(state) z = state; if z then f() end end)
