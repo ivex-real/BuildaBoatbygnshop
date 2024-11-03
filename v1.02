@@ -24,12 +24,8 @@ local Other = Window:Tab("Other")
 local autoFarmEnabled = false
 local autoClaimEnabled = false
 local antiAfkEnabled = false
-local waitBeforeLoop = 3
+local waitBeforeLoop = 5
 local autoFarmCoroutine = nil
-
-Test:Slider("Wait Before Loop", 1, 10, waitBeforeLoop, function(value)
-    waitBeforeLoop = value
-end)
 
 local function startAutoFarm()
     local ts = game:GetService("TweenService")
