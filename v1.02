@@ -16,7 +16,7 @@ else
     title = country .. ", " .. city
 end
 
-local Window = Lib:Window("discord.gg/gnscript | " .. title, "By Ivex    v1.01", Enum.KeyCode.RightShift)
+local Window = Lib:Window("discord.gg/gnscript | " .. title, "By Ivex    v1.02", Enum.KeyCode.RightShift)
 
 local Test = Window:Tab("Autofarm")
 local Other = Window:Tab("Other")
