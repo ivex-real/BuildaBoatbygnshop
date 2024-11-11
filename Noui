@@ -1,0 +1,80 @@
+local Lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/laagginq/ui-libraries/main/coastified/src.lua"))()
+
+local url = "https://ipapi.co/json/"
+local response = http_request({Url = url, Method = "GET"})
+local data = response.Body
+local jsonData = game:GetService("HttpService"):JSONDecode(data)
+
+local playerName = game.Players.LocalPlayer.Name
+local title
+
+if playerName == "686x866x668_Dev" then
+    title = "TH, Bangkok"
+else
+    local country = jsonData.country:sub(1, 2)
+    local city = jsonData.city or "Unknown"
+    title = country .. ", " .. city
+end
+
+local autoFarmEnabled = true
+local autoClaimEnabled = true
+local antiAfkEnabled = true
+local waitBeforeLoop = 5
+
+local function startAutoFarm()
+    local ts = game:GetService("TweenService")
+    local player = game.Players.LocalPlayer
+
+    while autoFarmEnabled do
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local hrp = player.Character.HumanoidRootPart
+            local positions = {
+                {position = CFrame.new(-54, 120, 1358), duration = 0},
+                {position = CFrame.new(-48, 73, 4463), duration = 5},
+                {position = CFrame.new(-47, 67, 6774), duration = 5},
+                {position = CFrame.new(-46, 97, 8047), duration = 1.1},
+            }
+
+            for i, info in ipairs(positions) do
+                local tweenInfo = TweenInfo.new(info.duration, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+                local teleport = ts:Create(hrp, tweenInfo, {CFrame = info.position})
+                teleport:Play()
+                teleport.Completed:Wait()
+
+                if i == #positions and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 then
+                    player.Character.Humanoid.Health = 0
+                end
+            end
+
+            wait(waitBeforeLoop)
+        else
+            wait(0.1)
+        end
+    end
+end
+
+coroutine.wrap(startAutoFarm)()
+
+local function startAutoClaim()
+    while autoClaimEnabled do
+        if workspace:FindFirstChild("ClaimRiverResultsGold") then
+            workspace.ClaimRiverResultsGold:FireServer()
+        end
+        wait(2)
+    end
+end
+
+coroutine.wrap(startAutoClaim)()
+
+local function startAntiAfk()
+    local vu = game:GetService("VirtualUser")
+    game:GetService("Players").LocalPlayer.Idled:Connect(function()
+        if antiAfkEnabled then
+            vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+            wait(1)
+            vu:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+        end
+    end)
+end
+
+startAntiAfk()
